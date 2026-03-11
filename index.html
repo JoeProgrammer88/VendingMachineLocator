@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Vending Machine Locator</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-content">
+      <span class="app-icon" aria-hidden="true">🥤</span>
+      <h1>Vending Machine Locator</h1>
+      <span id="machine-count" class="machine-count" title="Total machines saved">0</span>
+    </div>
+  </header>
+
+  <!-- ── Main Content ───────────────────────────── -->
+  <main class="app-main" id="app-main">
+
+    <!-- MAP VIEW -->
+    <section id="map-view" class="view active" aria-label="Map view">
+      <div id="map" aria-label="Satellite map of vending machine locations"></div>
+      <div id="map-empty" class="map-empty hidden">
+        <div class="empty-state">
+          <span aria-hidden="true">📍</span>
+          <p>No vending machines added yet.</p>
+          <button onclick="showView('add')" class="btn btn-primary">Add First Machine</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD LOCATION VIEW -->
+    <section id="add-view" class="view" aria-label="Add vending machine">
+      <div class="form-container">
+        <div class="form-card">
+          <h2>Add Vending Machine</h2>
+          <p class="form-subtitle">Fill in the details and capture your current GPS location.</p>
+
+          <form id="add-form" novalidate>
+
+            <div class="form-group">
+              <label for="machine-name">Machine Name <span class="required" aria-label="required">*</span></label>
+              <input
+                type="text"
+                id="machine-name"
+                placeholder="e.g. Floor 2 Break Room"
+                maxlength="100"
+                autocomplete="off"
+                required
+              />
+              <span class="field-error" id="name-error" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="machine-desc">Description <span class="optional">(optional)</span></label>
+              <textarea
+                id="machine-desc"
+                placeholder="e.g. Near the elevator, snacks &amp; drinks"
+                rows="3"
+                maxlength="300"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Location <span class="required" aria-label="required">*</span></label>
+
+              <div class="location-box" id="location-box">
+                <div class="location-placeholder" id="location-placeholder">
+                  <span aria-hidden="true">📡</span>
+                  <span>Tap the button below to capture your GPS location</span>
+                </div>
+                <div class="location-result hidden" id="location-result" aria-live="polite">
+                  <div class="location-row">
+                    <div class="location-coords">
+                      <span class="coord-label">LAT</span>
+                      <span class="coord-value" id="coord-lat">—</span>
+                    </div>
+                    <div class="location-coords">
+                      <span class="coord-label">LNG</span>
+                      <span class="coord-value" id="coord-lng">—</span>
+                    </div>
+                  </div>
+                  <span class="location-accuracy" id="coord-accuracy"></span>
+                </div>
+              </div>
+
+              <span class="field-error" id="location-error" role="alert"></span>
+
+              <button
+                type="button"
+                id="get-location-btn"
+                class="btn btn-secondary btn-full"
+                onclick="captureLocation()"
+              >
+                <span class="btn-icon" aria-hidden="true">📡</span>
+                Use My Location
+              </button>
+            </div>
+
+            <button type="submit" id="save-btn" class="btn btn-primary btn-full" disabled>
+              <span class="btn-icon" aria-hidden="true">💾</span>
+              Save Machine
+            </button>
+
+          </form>
+
+          <!-- Success state -->
+          <div id="success-message" class="success-message hidden" aria-live="polite">
+            <span aria-hidden="true">✅</span>
+            <p>Vending machine saved successfully!</p>
+            <div class="success-actions">
+              <button onclick="showView('map')" class="btn btn-primary">View on Map</button>
+              <button onclick="resetAndAddAnother()" class="btn btn-secondary">Add Another</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Bottom Navigation ──────────────────────── -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn active" id="nav-map" onclick="showView('map')" aria-label="Map view">
+      <span class="nav-icon" aria-hidden="true">🗺️</span>
+      <span class="nav-label">Map</span>
+    </button>
+    <button class="nav-btn" id="nav-add" onclick="showView('add')" aria-label="Add machine">
+      <span class="nav-icon" aria-hidden="true">➕</span>
+      <span class="nav-label">Add Location</span>
+    </button>
+  </nav>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>

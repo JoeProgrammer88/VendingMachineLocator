@@ -1,0 +1,606 @@
+/* ============================================================
+   Vending Machine Locator — styles.css
+   Mobile-first, single-page layout
+   ============================================================ */
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary:       #2563EB;
+  --primary-dark:  #1D4ED8;
+  --primary-light: #EFF6FF;
+  --danger:        #EF4444;
+  --danger-light:  #FEE2E2;
+  --success:       #22C55E;
+  --bg:            #F1F5F9;
+  --card-bg:       #FFFFFF;
+  --text:          #1E293B;
+  --text-muted:    #64748B;
+  --border:        #E2E8F0;
+  --shadow:        0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md:     0 4px 16px rgba(0, 0, 0, 0.12);
+  --radius:        12px;
+  --header-h:      56px;
+  --nav-h:         64px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  background: var(--primary);
+  color: white;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  /* Support iPhone notch */
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.app-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.machine-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  flex-shrink: 0;
+}
+
+/* ── Layout ───────────────────────────────────────────────── */
+.app-main {
+  position: fixed;
+  top: var(--header-h);
+  bottom: var(--nav-h);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+/* ── Views ────────────────────────────────────────────────── */
+.view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.view.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Map View ─────────────────────────────────────────────── */
+#map {
+  width: 100%;
+  height: 100%;
+  background: #1a1a2e;
+}
+
+.map-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.88);
+  z-index: 500;
+  backdrop-filter: blur(4px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 24px;
+}
+
+.empty-state > span {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+/* ── Add View ─────────────────────────────────────────────── */
+#add-view {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.form-container {
+  padding: 16px;
+  padding-bottom: 24px;
+  min-height: 100%;
+}
+
+.form-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: var(--shadow);
+}
+
+.form-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.form-subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ── Form Groups ──────────────────────────────────────────── */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.required {
+  color: var(--danger);
+}
+
+.optional {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;     /* Prevent iOS auto-zoom */
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-group textarea {
+  resize: none;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+/* ── Location Box ─────────────────────────────────────────── */
+.location-box {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  padding: 14px;
+  margin-bottom: 10px;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+}
+
+.location-box.has-location {
+  border-color: var(--success);
+  background: #F0FDF4;
+}
+
+.location-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.location-placeholder > span:first-child {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.location-result {
+  width: 100%;
+}
+
+.location-row {
+  display: flex;
+  gap: 20px;
+}
+
+.location-coords {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.coord-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.coord-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.location-accuracy {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  font-family: inherit;
+  text-decoration: none;
+  -webkit-appearance: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.btn-primary:disabled {
+  background: #94A3B8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background: #DBEAFE;
+}
+
+.btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ── Field Errors ─────────────────────────────────────────── */
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 5px;
+  min-height: 16px;
+  line-height: 1.3;
+}
+
+/* ── Success State ────────────────────────────────────────── */
+.success-message {
+  text-align: center;
+  padding: 16px 0 4px;
+}
+
+.success-message > span {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.success-message p {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Bottom Navigation ────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  background: var(--card-bg);
+  display: flex;
+  border-top: 1px solid var(--border);
+  z-index: 1000;
+  /* iPhone home indicator safe area */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  border-radius: 0;
+  font-family: inherit;
+}
+
+.nav-btn.active {
+  color: var(--primary);
+}
+
+.nav-btn:active {
+  background: var(--bg);
+}
+
+.nav-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── Leaflet Popup Overrides ──────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-md) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+/* ── Map Popup Card ───────────────────────────────────────── */
+.popup-card {
+  padding: 14px 16px 12px;
+  min-width: 210px;
+  max-width: 260px;
+}
+
+.popup-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.popup-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.popup-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.9;
+}
+
+.popup-delete-btn {
+  width: 100%;
+  background: var(--danger-light);
+  color: var(--danger);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.popup-delete-btn:hover {
+  background: #FECACA;
+}
+
+/* ── Custom Map Marker ────────────────────────────────────── */
+.vm-marker-outer {
+  background: transparent !important;
+  border: none !important;
+}
+
+.vm-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+}
+
+.vm-pin-circle {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.vm-pin-stem {
+  width: 4px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 0 0 4px 4px;
+}
+
+/* ── Loading Spinner ──────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(37, 99, 235, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.btn-primary .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+}
+
+/* ── Utility ──────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
+/* ── Larger screens (tablet / desktop) ───────────────────── */
+@media (min-width: 480px) {
+  .form-container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .success-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 60px;
+    --nav-h:    68px;
+  }
+
+  .app-header h1 {
+    font-size: 20px;
+  }
+
+  .form-card {
+    padding: 32px 28px;
+  }
+}
