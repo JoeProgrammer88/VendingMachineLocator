@@ -108,7 +108,10 @@ function createMachineIcon() {
   return L.divIcon({
     className:    'vm-marker-outer',
     html:         `<div class="vm-pin">
-                     <div class="vm-pin-circle">🥤</div>
+                     <div class="vm-pin-circle">
+                       <img src="images/vm-logo.png" alt="Vending machine" width="22" height="22"
+                            style="display:block;object-fit:contain;">
+                     </div>
                      <div class="vm-pin-stem"></div>
                    </div>`,
     iconSize:     [38, 50],
